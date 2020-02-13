@@ -1,8 +1,10 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const base = require('./webpack.base.config')
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
+// const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
+const WorkboxPlugin = require('workbox-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 const config = merge(base, {
   entry: {
@@ -53,38 +55,70 @@ const config = merge(base, {
   ]
 })
 
-if (process.env.NODE_ENV === 'production') {
-  config.plugins.push(
-    // auto generate service worker
-    new SWPrecacheWebpackPlugin({
-      cacheId: 'mirror-media',
-      filename: 'service-worker.js',
-      minify: true,
-      staticFileGlobsIgnorePatterns: [/\.map$/, /\.json$/],
-      runtimeCaching: [
-        {
-          urlPattern: /(localhost:8080|mirrormedia.mg)\/(app|author|category|external|project-list|story|section|tag|topic|video)\/[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+$/,
-          handler: 'networkFirst'
-        },
-        {
-          urlPattern: /(localhost:8080|mirrormedia.com.tw|mirrormedia.mg|storage.googleapis.com\/mirrormedia-files)\/assets\/(?!audios\/)[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+.[\s\S]+$/,
-          handler: 'networkFirst'
-        },
-        {
-          urlPattern: /(localhost:8080|mirrormedia.mg)\/?$/,
-          handler: 'networkFirst'
-        },
-        {
-          urlPattern: /(localhost:8080|mirrormedia.mg)\/dist\/[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+.[\s\S]+$/,
-          handler: 'networkFirst'
-        },
-        {
-          urlPattern: /(localhost:8080|mirrormedia.mg)\/api\/(?!tracking)[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+$/,
-          handler: 'networkFirst'
-        }
-      ]
-    })
-  )
-}
+config.plugins.push(
+  new WorkboxPlugin.GenerateSW({
+    cacheId: 'mirror-media',
+    exclude: [/\.map$/, /\.json$/],
+    runtimeCaching: [
+      {
+        urlPattern: /(localhost:8080|mirrormedia.mg)\/(app|author|category|external|project-list|story|section|tag|topic|video)\/[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+$/,
+        handler: 'NetworkFirst'
+      },
+      {
+        urlPattern: /(localhost:8080|mirrormedia.com.tw|mirrormedia.mg|storage.googleapis.com\/mirrormedia-files)\/assets\/(?!audios\/)[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+.[\s\S]+$/,
+        handler: 'NetworkFirst'
+      },
+      {
+        urlPattern: /(localhost:8080|mirrormedia.mg)\/?$/,
+        handler: 'NetworkFirst'
+      },
+      {
+        urlPattern: /(localhost:8080|mirrormedia.mg)\/dist\/[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+.[\s\S]+$/,
+        handler: 'NetworkFirst'
+      },
+      {
+        urlPattern: /(localhost:8080|mirrormedia.mg)\/api\/(?!tracking)[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+$/,
+        handler: 'NetworkFirst'
+      }
+    ]
+  }),
+  new CopyPlugin([
+    { from: 'firebase-messaging-sw.js', to: 'firebase-messaging-sw.js' }
+  ])
+)
+
+// if (process.env.NODE_ENV === 'production') {
+//   config.plugins.push(
+//     // auto generate service worker
+//     new SWPrecacheWebpackPlugin({
+//       cacheId: 'mirror-media',
+//       filename: 'service-worker.js',
+//       minify: true,
+//       staticFileGlobsIgnorePatterns: [/\.map$/, /\.json$/],
+//       runtimeCaching: [
+//         {
+//           urlPattern: /(localhost:8080|mirrormedia.mg)\/(app|author|category|external|project-list|story|section|tag|topic|video)\/[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+$/,
+//           handler: 'networkFirst'
+//         },
+//         {
+//           urlPattern: /(localhost:8080|mirrormedia.com.tw|mirrormedia.mg|storage.googleapis.com\/mirrormedia-files)\/assets\/(?!audios\/)[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+.[\s\S]+$/,
+//           handler: 'networkFirst'
+//         },
+//         {
+//           urlPattern: /(localhost:8080|mirrormedia.mg)\/?$/,
+//           handler: 'networkFirst'
+//         },
+//         {
+//           urlPattern: /(localhost:8080|mirrormedia.mg)\/dist\/[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+.[\s\S]+$/,
+//           handler: 'networkFirst'
+//         },
+//         {
+//           urlPattern: /(localhost:8080|mirrormedia.mg)\/api\/(?!tracking)[A-Za-z0-9.*+?^=!:${}()#%~&_@\-`|[\]/\\]+$/,
+//           handler: 'networkFirst'
+//         }
+//       ]
+//     })
+//   )
+// }
 
 module.exports = config

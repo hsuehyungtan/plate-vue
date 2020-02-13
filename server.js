@@ -96,8 +96,12 @@ app.use('/assets', serve('./assets', true), staticNotFound)
 app.use('/public', (req, res) => {
   res.redirect('/assets/mirrormedia' + req.url)
 })
+
+// manifest.json only for local test
 app.use('/manifest.json', serve('./manifest.json', true), staticNotFound)
+
 app.use('/service-worker.js', serve('./dist/service-worker.js'), staticNotFound)
+app.use('/firebase-messaging-sw.js', serve('./dist/firebase-messaging-sw.js'), staticNotFound)
 
 app.use(function (req, res, next) {
   let err = null
