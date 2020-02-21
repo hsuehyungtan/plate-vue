@@ -73,4 +73,16 @@ if ('serviceWorker' in navigator) {
       debugSW('REGISTERING SW IN FAIL.')
     })
   navigator.serviceWorker.addEventListener('message', event => debugSW('Got Msg from dervice-worker!' + event.data))
+
+  // if (!('PushManager' in window)) {
+  //   debugSW('Push messaging is not supported.')
+  // } else {
+  //   navigator.serviceWorker.register('/firebase-messaging-sw.js')
+  //     .then(() => {
+  //       debugSW('REGISTERING SW SUCCESSFULLY.')
+  //     })
+  //     .catch(() => {
+  //       debugSW('REGISTERING SW IN FAIL.')
+  //     })
+  // }
 }

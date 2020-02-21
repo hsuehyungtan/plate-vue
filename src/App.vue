@@ -94,6 +94,16 @@ export default {
       import('firebase/messaging')
         .then(() => {
           const messaging = firebase.messaging()
+
+          navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then(registration => {
+              console.log('REGISTERING SW SUCCESSFULLY.', registration)
+              messaging.useServiceWorker(registration)
+            })
+            .catch(err => {
+              console.log('REGISTERING SW err.', err)
+            })
+
           messaging.usePublicVapidKey('BJ3O7VVlyDAfrgg_QqNLILWQ020EOdm_Up3VSwjxkzEZa_jY53P-iZrrCnbRh4fCNSQRGzbIquoIGDIr30a8GJ4')
           console.log('------', messaging)
           messaging.requestPermission()
