@@ -15,7 +15,6 @@ import { mmLog } from './util/comm.js'
 import { visibleTracking } from './util/visibleTracking'
 import loadScripts from './mixin/loadScripts.js'
 import Tap from 'tap.js'
-import { firebase } from './firebase'
 
 const debug = require('debug')('CLIENT:App')
 
@@ -83,50 +82,11 @@ export default {
     this.launchLogger()
     this.setUpVisibleTracking()
     window.addEventListener('resize', this.updateViewport)
-
-    this.initFirebaseMessaging()
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.updateViewport)
   },
   methods: {
-    initFirebaseMessaging () {
-      import('firebase/messaging')
-        .then(() => {
-          const messaging = firebase.messaging()
-
-          navigator.serviceWorker.register('/firebase-messaging-sw.js')
-            .then(registration => {
-              console.log('REGISTERING SW SUCCESSFULLY.', registration)
-              messaging.useServiceWorker(registration)
-            })
-            .catch(err => {
-              console.log('REGISTERING SW err.', err)
-            })
-
-          messaging.usePublicVapidKey('BJ3O7VVlyDAfrgg_QqNLILWQ020EOdm_Up3VSwjxkzEZa_jY53P-iZrrCnbRh4fCNSQRGzbIquoIGDIr30a8GJ4')
-          console.log('------', messaging)
-          messaging.requestPermission()
-            .then(() => {
-              console.log('--- here')
-              messaging.getToken()
-                .then(currentToken => {
-                  console.log('------ currentToken', currentToken)
-                })
-            })
-
-          messaging.onTokenRefresh(() => {
-            messaging.getToken()
-              .then(refreshedToken => {
-
-              })
-          })
-
-          messaging.onMessage(payload => {
-            console.log('------ payload', payload)
-          })
-        })
-    },
     doLog (event) {
       mmLog({
         category: 'whole-site',
