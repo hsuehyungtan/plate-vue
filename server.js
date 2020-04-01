@@ -99,10 +99,11 @@ app.use('/public', (req, res) => {
 
 // manifest.json only for local test
 app.use('/manifest.json', serve('./manifest.json', true), staticNotFound)
+app.use('/workbox-9913c83f.js', serve('./workbox-9913c83f.js', true), staticNotFound)
 
 app.use('/service-worker.js', serve('./dist/service-worker.js'), staticNotFound)
 app.use('/firebase-messaging-sw.js', serve('./dist/firebase-messaging-sw.js'), staticNotFound)
-app.use('/workbox-*(js)', express.static(path.join(__dirname, 'dist'), { redirect: false }))
+// app.use('/workbox-*(js)', express.static(path.join(__dirname, 'dist'), { redirect: false }))
 // app.use('/workbox-*.js', express.static(path.resolve(__dirname, '/dist')), staticNotFound)
 
 app.use(function (req, res, next) {

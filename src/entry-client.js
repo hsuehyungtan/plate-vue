@@ -1,7 +1,7 @@
 import ProgressBar from './components/ProgressBar.vue'
 import Vue from 'vue'
 import { createApp } from './app'
-import { firebase } from './firebase'
+// import { firebase } from './firebase'
 import 'firebase/messaging'
 
 // global progress bar
@@ -79,47 +79,41 @@ if ('serviceWorker' in navigator) {
   if (!('PushManager' in window)) {
     debugSW('Push messaging is not supported.')
   } else {
-    const messaging = firebase.messaging()
+    // const messaging = firebase.messaging()
 
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
-      .then(registration => {
-        debugSW('REGISTERING SW SUCCESSFULLY.')
-        console.log('REGISTERING SW SUCCESSFULLY.', registration)
-        messaging.useServiceWorker(registration)
-      })
-      .catch(err => {
-        debugSW('REGISTERING SW IN FAIL.', err)
-        console.log('REGISTERING SW err.', err)
-      })
-      .then(() => {
-        messaging.usePublicVapidKey('BJ3O7VVlyDAfrgg_QqNLILWQ020EOdm_Up3VSwjxkzEZa_jY53P-iZrrCnbRh4fCNSQRGzbIquoIGDIr30a8GJ4')
-        messaging.requestPermission()
-          .then(() => {
-            console.log('firebase after requestPermission')
-            messaging.getToken()
-              .then(currentToken => {
-                console.log('firebase currentToken:', currentToken)
-              })
-          })
-        messaging.onTokenRefresh(() => {
-          messaging.getToken()
-            .then(refreshedToken => {
+    // navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    //   .then(registration => {
+    //     debugSW('REGISTERING Firebase SW SUCCESSFULLY.')
+    //     console.log('REGISTERING Firebase SW SUCCESSFULLY.', registration)
+    //     messaging.useServiceWorker(registration)
+    //   })
+    //   .catch(err => {
+    //     debugSW('REGISTERING SW IN FAIL.', err)
+    //     console.log('REGISTERING Firebase SW err.', err)
+    //   })
+    //   .then(() => {
+    //     messaging.usePublicVapidKey('BJ3O7VVlyDAfrgg_QqNLILWQ020EOdm_Up3VSwjxkzEZa_jY53P-iZrrCnbRh4fCNSQRGzbIquoIGDIr30a8GJ4')
+    //     messaging.requestPermission()
+    //       .then(() => {
+    //         console.log('firebase after requestPermission')
+    //         messaging.getToken()
+    //       })
+    //     messaging.onTokenRefresh(() => {
+    //       messaging.getToken()
+    //     })
+    //     messaging.onMessage(payload => {
+    //       console.log('firebase onMessage payload:', payload)
+    //       const title = payload.notification.title
+    //       const options = payload.notification
+    //       options.icon = payload.data.icon
 
-            })
-        })
-        messaging.onMessage(payload => {
-          console.log('firebase onMessage payload:', payload)
-          const title = payload.notification.title
-          const options = payload.notification
-          options.icon = payload.data.icon
+    //       const notification = new Notification(title, options)
 
-          const notification = new Notification(title, options)
-
-          notification.addEventListener('click', e => {
-            e.preventDefault()
-            window.open(payload.data.url, '_blank')
-          })
-        })
-      })
+    //       notification.addEventListener('click', e => {
+    //         e.preventDefault()
+    //         window.open(payload.data.url, '_blank')
+    //       })
+    //     })
+    //   })
   }
 }
