@@ -85,9 +85,12 @@ if (isProd) {
   )
 }
 
-const serve = (path, cache) => express.static(resolve(path), {
-  maxAge: cache && isProd ? 1000 * 60 * 60 : 0
-})
+const serve = (path, cache) => {
+  console.log('---- serve', path)
+  return express.static(resolve(path), {
+    maxAge: cache && isProd ? 1000 * 60 * 60 : 0
+  })
+}
 const staticNotFound = (req, res) => res.status(404).send('404 | Not Found')
 app.use(compression({ threshold: 0 }))
 app.use(favicon('./assets/mirrormedia/favicon-48x48.png'))
@@ -99,13 +102,8 @@ app.use('/public', (req, res) => {
 
 // manifest.json only for local test
 app.use('/manifest.json', serve('./manifest.json', true), staticNotFound)
-app.use('/workbox-9913c83f.js', serve('./workbox-9913c83f.js', true), staticNotFound)
 
 app.use('/service-worker.js', serve('./dist/service-worker.js'), staticNotFound)
-app.use('/firebase-messaging-sw.js', serve('./dist/firebase-messaging-sw.js'), staticNotFound)
-// app.use('/workbox-*(js)', express.static(path.join(__dirname, 'dist'), { redirect: false }))
-// app.use('/workbox-*.js', express.static(path.resolve(__dirname, '/dist')), staticNotFound)
-
 app.use(function (req, res, next) {
   let err = null
   try {

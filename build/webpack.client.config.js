@@ -59,6 +59,7 @@ config.plugins.push(
   new GenerateSW({
     swDest: 'service-worker.js',
     skipWaiting: true,
+    inlineWorkboxRuntime: true,
     cacheId: 'mirror-media',
     exclude: [/\.map$/, /\.json$/],
     runtimeCaching: [
